@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מוזיאון האשליות הכושלות - מעבדת שבירה</title>
+    <link rel="stylesheet" href="look.css">
+</head>
+<body>
+    <div class="container">
+        <h1>מוזיאון האשליות: פרשת הקש השבור 🕵️‍♂️</h1>
+        <p>השתמשו בעכבר כדי לירות קרן לייזר ולראות איך המקדם $n$ "מעכב" אותה!</p>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>חומר עליון ($n_1$):</label>
+                <select id="n1">
+                    <option value="1">אוויר (מהיר וקליל)</option>
+                    <option value="1.33">מים (קצת דביק)</option>
+                    <option value="1.5">זכוכית (כמו פקק תנועה)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>חומר תחתון ($n_2$):</label>
+                <select id="n2" selected="1.5">
+                    <option value="1">אוויר</option>
+                    <option value="1.33">מים</option>
+                    <option value="1.5" selected>זכוכית</option>
+                    <option value="2.4">יהלום (הכי איטי בעיר)</option>
+                </select>
+            </div>
+        </div>
+
+        <canvas id="opticsCanvas"></canvas>
+        
+        <div id="status-bar">
+            זווית פגיעה: <span id="angle-in">0</span>° | זווית שבירה: <span id="angle-out">0</span>°
+        </div>
+    </div>
+    <script src="logi.js"></script>
+</body>
+</html>
