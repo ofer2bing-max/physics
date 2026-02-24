@@ -2,18 +2,24 @@ const canvas = document.getElementById('opticsCanvas');
 const ctx = canvas.getContext('2d');
 const n1Select = document.getElementById('n1');
 const n2Select = document.getElementById('n2');
+const music = document.getElementById('bgMusic');
+const playBtn = document.getElementById('playBtn');
 
 canvas.width = 600;
 canvas.height = 400;
-let mouseX = 0;
-let mouseY = 0;
+
+let mX = 150;
+let mY = 100;
 
 canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
+    mX = e.clientX - rect.left;
+    mY = e.clientY - rect.top;
     draw();
 });
+
+n1Select.onchange = draw;
+n2Select.onchange = draw;
 
 function draw() {
     const n1 = parseFloat(n1Select.value);
@@ -23,61 +29,49 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ציור חומרים
-    ctx.fillStyle = "#e0f7fa";
-    ctx.fillRect(0, 0, canvas.width, centerY);
-    ctx.fillStyle = "#b2ebf2";
-    ctx.fillRect(0, centerY, canvas.width, centerY);
+    // רקע חומרים
+    ctx.fillStyle = "#e0f7fa"; ctx.fillRect(0, 0, canvas.width, centerY);
+    ctx.fillStyle = "#b2ebf2"; ctx.fillRect(0, centerY, canvas.width, centerY);
 
-    // 1. אנך מקווקו
-    ctx.setLineDash([5, 5]);
-    ctx.strokeStyle = "#666";
-    ctx.beginPath();
-    ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, canvas.height);
-    ctx.stroke();
+    // קו הפרדה ואנך
+    ctx.strokeStyle = "black"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); ctx.stroke();
+    
+    ctx.setLineDash([5, 5]); ctx.strokeStyle = "#666";
+    ctx.beginPath(); ctx.moveTo(centerX, 0); ctx.lineTo(centerX, canvas.height); ctx.stroke();
     ctx.setLineDash([]);
 
-    // 2. קו ממשק
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(canvas.width, centerY);
-    ctx.stroke();
+    if (mY >= centerY) return;
 
-    if (mouseY >= centerY) return;
-
-    // 3. חישוב וקטור הכניסה
-    // dx הוא המרחק האופקי מהמרכז. אם העכבר משמאל, dx שלילי.
-    let dx = mouseX - centerX;
-    let dy = centerY - mouseY;
+    // חישוב וקטור הכניסה
+    let dx = mX - centerX;
+    let dy = centerY - mY;
     
-    // זווית הפגיעה ביחס לאנך
+    // זווית פגיעה (theta1)
     let theta1 = Math.atan2(dx, dy);
 
-    // 4. קרן פוגעת (אדומה) - מהעכבר לנקודת הפגיעה
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 3;
+    // 1. קרן פוגעת (אדומה)
+    ctx.strokeStyle = "red"; ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(mouseX, mouseY);
+    ctx.moveTo(mX, mY);
     ctx.lineTo(centerX, centerY);
     ctx.stroke();
 
-    // 5. חוק סנל (Snell's Law)
+    // 2. חישוב חוק סנל
     let sinTheta2 = (n1 * Math.sin(theta1)) / n2;
     
     if (Math.abs(sinTheta2) <= 1) {
         let theta2 = Math.asin(sinTheta2);
         
         ctx.strokeStyle = "orange";
+        ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         
-        // התיקון כאן: 
-        // הקרן צריכה להמשיך באותו כיוון אופקי (אם באנו משמאל, נמשיך לימין ולהפך)
-        // לכן אנחנו הופכים את הסימן של sin בציור (כי הקרן "חוצה" את האנך)
-        ctx.lineTo(centerX - Math.sin(theta2) * 200, centerY + Math.cos(theta2) * 200);
+        // --- התיקון הקריטי כאן ---
+        // אנחנו הופכים את סימן ה-Sin כדי שהקרן תחצה את האנך לצד השני!
+        // אם באנו מימין (dx חיובי), הקרן תצא לשמאל (מינוס).
+        ctx.lineTo(centerX - Math.sin(theta2) * 500, centerY + Math.cos(theta2) * 500);
         ctx.stroke();
         
         document.getElementById('angle-in').innerText = Math.abs(theta1 * 180 / Math.PI).toFixed(1);
@@ -85,12 +79,21 @@ function draw() {
     } else {
         // החזרה גמורה
         ctx.strokeStyle = "purple";
+        ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX - dx, centerY - dy); // החזרה סימטרית
+        ctx.lineTo(centerX - dx, centerY - dy); // החזרה לצד השני למעלה
         ctx.stroke();
         document.getElementById('angle-out').innerText = "החזרה גמורה!";
     }
 }
+
+// פונקציות מוזיקה
+function toggleMusic() {
+    if (music.paused) { music.play(); playBtn.innerText = "עצור מוזיקה ⏸️"; }
+    else { music.pause(); playBtn.innerText = "נגן מוזיקה 🎵"; }
+}
+function restartMusic() { music.currentTime = 0; music.play(); }
+function changeVolume(val) { music.volume = val; }
 
 draw();

@@ -2,30 +2,30 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>sybau</title>️
+    <title>מוזיאון האשליות: פרשת הקש השבור 🕵️‍♂️</title>
     <link rel="stylesheet" href="look.css">
 </head>
 <body>
     <div class="container">
         <h1>חוק סנל</h1>
-        <p>שתמש בעכבר כדי לירות את הקרן אור</p>
+        <p>תזיז את העכבר כדי לראות איך הקרן אור משפיעה על השבירה בחומרים שונים</p>
         
         <div class="controls">
             <div class="control-group">
                 <label>חומר עליון n1:</label>
                 <select id="n1">
-                    <option value="1">אוויר</option>
-                    <option value="1.33">מים</option>
-                    <option value="1.5">זכוכית</option>
+                    <option value="1">אוויר (1.0)</option>
+                    <option value="1.33">מים (1.33)</option>
+                    <option value="1.5">זכוכית (1.5)</option>
                 </select>
             </div>
             <div class="control-group">
                 <label>חומר תחתון n2:</label>
-                <select id="n2" selected="1.5">
-                    <option value="1">אוויר</option>
-                    <option value="1.33">מים</option>
-                    <option value="1.5" selected>זכוכית</option>
-                    <option value="2.4">יהלום</option>
+                <select id="n2">
+                    <option value="1">אוויר (1.0)</option>
+                    <option value="1.33">מים (1.33)</option>
+                    <option value="1.5" selected>זכוכית (1.5)</option>
+                    <option value="2.4">יהלום (2.4)</option>
                 </select>
             </div>
         </div>
@@ -34,6 +34,18 @@
         
         <div id="status-bar">
             זווית פגיעה: <span id="angle-in">0</span>° | זווית שבירה: <span id="angle-out">0</span>°
+        </div>
+
+        <div class="audio-controls">
+            <audio id="bgMusic" loop>
+                <source src="anatoli-funk.mp4" type="audio/mpeg">
+            </audio>
+            <button onclick="toggleMusic()" id="playBtn">נגן מוזיקה 🎵</button>
+            <button onclick="restartMusic()">התחל מחדש 🔄</button>
+            <div class="volume-container">
+                <label>ווליום:</label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(this.value)">
+            </div>
         </div>
     </div>
     <script src="logi.js"></script>
